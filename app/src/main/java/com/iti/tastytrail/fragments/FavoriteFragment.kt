@@ -8,8 +8,8 @@ class FavoriteFragment : BaseFragment() {
     private val binding get() = _binding
 
 
-    override fun onDetach() {
-        super.onDetach()
+    override fun onDestroy() {
+        super.onDestroy()
         _binding = null
     }
 }
