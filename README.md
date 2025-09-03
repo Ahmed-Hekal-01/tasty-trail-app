@@ -1,1 +1,0 @@
-# tasty-trail-app
