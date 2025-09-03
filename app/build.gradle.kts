@@ -6,6 +6,10 @@ plugins {
 }
 
 android {
+
+    buildFeatures {
+        viewBinding = true
+    }
     namespace = "com.iti.tastytrail"
     compileSdk = 36
 
