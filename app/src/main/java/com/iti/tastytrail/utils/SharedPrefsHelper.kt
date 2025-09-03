@@ -2,6 +2,7 @@ package com.iti.tastytrail.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 
 object SharedPrefsHelper {
     fun getPrefs(context: Context): SharedPreferences =
@@ -11,6 +12,6 @@ object SharedPrefsHelper {
         getPrefs(context).getBoolean(Constants.IS_LOGGED_IN, false)
 
     fun setLoggedIn(context: Context, value: Boolean) {
-        getPrefs(context).edit().putBoolean(Constants.IS_LOGGED_IN, value).apply()
+        getPrefs(context).edit { putBoolean(Constants.IS_LOGGED_IN, value) }
     }
 }
