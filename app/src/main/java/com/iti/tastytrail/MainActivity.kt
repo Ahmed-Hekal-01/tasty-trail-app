@@ -1,11 +1,15 @@
-package com.iti.tastytrail.activities
+package com.iti.tastytrail
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import com.iti.tastytrail.R
+import com.iti.tastytrail.data.database.TastyTrailDatabase
+import com.iti.tastytrail.repositories.UserRepositoryImpl
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     lateinit var navController: NavController
 

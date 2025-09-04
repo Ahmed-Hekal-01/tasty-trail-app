@@ -9,7 +9,7 @@
     <!-- Splash -->
     <fragment
         android:id="@+id/splashFragment"
-        android:name="com.iti.tastytrail.fragments.SplashFragment"
+        android:name="com.iti.tastytrail.ui.fragments.SplashFragment"
         android:label="Splash"
         tools:layout="@layout/fragment_splash"
         tools:ignore="HardcodedText">
@@ -28,7 +28,7 @@
     <!-- Login -->
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.iti.tastytrail.fragments.LoginFragment"
+        android:name="com.iti.tastytrail.ui.fragments.LoginFragment"
         android:label="Login"
         tools:layout="@layout/fragment_login">
         <action
@@ -39,12 +39,13 @@
             app:destination="@id/homeFragment"
             app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true" />
+
     </fragment>
 
     <!-- Register -->
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.iti.tastytrail.fragments.RegisterFragment"
+        android:name="com.iti.tastytrail.ui.fragments.RegisterFragment"
         android:label="Register"
         tools:layout="@layout/fragment_register">
         <action
@@ -52,6 +53,10 @@
             app:destination="@id/homeFragment"
             app:popUpTo="@id/registerFragment"
             app:popUpToInclusive="true" />
+        <action android:id="@+id/action_register_to_login"
+            app:destination="@+id/loginFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
 
     <!-- Home (Main Flow starts here) -->

@@ -6,7 +6,10 @@ import androidx.core.content.edit
 
 object SharedPrefsHelper {
     fun getPrefs(context: Context): SharedPreferences =
-        context.getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
+        context.getSharedPreferences(
+            Constants.PREFS_NAME,
+            Context.MODE_PRIVATE
+        )
 
     fun isLoggedIn(context: Context): Boolean =
         getPrefs(context).getBoolean(Constants.IS_LOGGED_IN, false)
