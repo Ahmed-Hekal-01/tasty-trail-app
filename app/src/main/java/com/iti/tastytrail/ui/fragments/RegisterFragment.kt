@@ -50,6 +50,8 @@ class RegisterFragment : Fragment() {
             val password = binding.passwordEditText.text.toString().trim()
             val confirmPassword = binding.confirmPasswordEditText.text.toString().trim()
 
+            // todo add better error handling
+
             if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
                 Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -59,11 +61,17 @@ class RegisterFragment : Fragment() {
                 Toast.makeText(requireContext(), "Passwords do not match", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+            val user = User(
+                username = username,
+                email = email,
+                password = password
+            )
             coroutineScope.launch {
                 val isRegistered = withContext(Dispatchers.IO) {
-                    userRepo.registerUser(User("1" , username , email , password))
+                    userRepo.registerUser(user)
                 }
 
+                // todo don't forget to nav the user to the home after reg
                 if (isRegistered) {
 //                    saveLoginState()
                     findNavController().navigate(R.id.action_register_to_login)
@@ -74,7 +82,6 @@ class RegisterFragment : Fragment() {
             }
         }
 
-        // Navigate to register
         binding.loginRedirect.setOnClickListener {
             findNavController().navigate(R.id.action_register_to_login)
         }
