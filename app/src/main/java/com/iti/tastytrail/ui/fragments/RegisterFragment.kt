@@ -74,7 +74,7 @@ class RegisterFragment : Fragment() {
                 // todo don't forget to nav the user to the home after reg
                 if (isRegistered) {
 //                    saveLoginState()
-                    findNavController().navigate(R.id.action_register_to_login)
+                    findNavController().navigate(R.id.action_register_to_home)
                 } else {
                     Toast.makeText(requireContext(), "Error!", Toast.LENGTH_SHORT)
                         .show()

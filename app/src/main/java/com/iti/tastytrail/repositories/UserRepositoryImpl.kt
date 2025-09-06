@@ -1,5 +1,7 @@
 package com.iti.tastytrail.repositories
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import com.iti.tastytrail.data.dao.UserDao
 import com.iti.tastytrail.data.models.User
 import kotlinx.coroutines.flow.Flow
@@ -33,12 +35,14 @@ class UserRepositoryImpl(private val userDao: UserDao) : UserRepository {
             val existingUserByUsername = userDao.getUserByUsername(user.username)
             
             if (existingUserByEmail != null || existingUserByUsername != null) {
+                Log.i(TAG ,"user exists" )
                 false // User already exists
             } else {
                 userDao.insertUser(user)
                 true // Registration successful
             }
         } catch (e: Exception) {
+            Log.e(TAG ,"Exp ${e.message}" )
             false // Registration failed
         }
     }

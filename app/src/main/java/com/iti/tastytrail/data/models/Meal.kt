@@ -4,8 +4,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 
-@Entity(tableName = "recipes")
-data class Recipe(
+@Entity(tableName = "meals")
+data class Meal(
     @PrimaryKey
     @Json(name = "idMeal")
     val id: String,

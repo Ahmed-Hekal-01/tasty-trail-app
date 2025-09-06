@@ -5,7 +5,7 @@ import com.iti.tastytrail.MainActivity
 
 abstract class BaseFragment : Fragment() {
     protected val navController by lazy {
-        (activity as MainActivity)
+        (activity as MainActivity).navController
     }
 
 }

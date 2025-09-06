@@ -1,39 +1,39 @@
 package com.iti.tastytrail.data.dao
 
 import androidx.room.*
-import com.iti.tastytrail.data.models.Recipe
+import com.iti.tastytrail.data.models.Meal
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RecipeDao {
     
-    @Query("SELECT * FROM recipes")
-    fun getAllRecipes(): Flow<List<Recipe>>
+    @Query("SELECT * FROM meals")
+    fun getAllRecipes(): Flow<List<Meal>>
     
-    @Query("SELECT * FROM recipes WHERE id = :recipeId")
-    suspend fun getRecipeById(recipeId: String): Recipe?
+    @Query("SELECT * FROM meals WHERE id = :recipeId")
+    suspend fun getRecipeById(recipeId: String): Meal?
     
-    @Query("SELECT * FROM recipes WHERE isFavorite = 1")
-    fun getFavoriteRecipes(): Flow<List<Recipe>>
-    
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertRecipe(recipe: Recipe)
+    @Query("SELECT * FROM meals WHERE isFavorite = 1")
+    fun getFavoriteRecipes(): Flow<List<Meal>>
     
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertRecipes(recipes: List<Recipe>)
+    suspend fun insertRecipe(meal: Meal)
+    
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertRecipes(meals: List<Meal>)
     
     @Update
-    suspend fun updateRecipe(recipe: Recipe)
+    suspend fun updateRecipe(meal: Meal)
     
-    @Query("UPDATE recipes SET isFavorite = :isFavorite WHERE id = :recipeId")
+    @Query("UPDATE meals SET isFavorite = :isFavorite WHERE id = :recipeId")
     suspend fun updateFavoriteStatus(recipeId: String, isFavorite: Boolean)
     
     @Delete
-    suspend fun deleteRecipe(recipe: Recipe)
+    suspend fun deleteRecipe(meal: Meal)
     
-    @Query("DELETE FROM recipes WHERE id = :recipeId")
+    @Query("DELETE FROM MEALS WHERE id = :recipeId")
     suspend fun deleteRecipeById(recipeId: String)
     
-    @Query("DELETE FROM recipes")
+    @Query("DELETE FROM meals")
     suspend fun clearAllRecipes()
 }

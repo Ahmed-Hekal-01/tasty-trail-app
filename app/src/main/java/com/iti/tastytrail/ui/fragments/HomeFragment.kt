@@ -1,19 +1,23 @@
-package com.iti.tastytrail.fragments
+package com.iti.tastytrail.ui.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.edit
+import com.airbnb.epoxy.EpoxyRecyclerView
+import com.iti.tastytrail.R
 import com.iti.tastytrail.databinding.FragmentHomeBinding
-import com.iti.tastytrail.ui.fragments.BaseFragment
+import com.iti.tastytrail.ui.epoxy.EpoxyHomeController
+import com.iti.tastytrail.viewmodels.HomeViewModel
 
 class HomeFragment : BaseFragment() {
 
     private var _binding : FragmentHomeBinding? = null
 
     private val binding get() = _binding!!
+
+    private lateinit var  homeViewModel : HomeViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -24,9 +28,11 @@ class HomeFragment : BaseFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-
+        val epoxyHomeController = EpoxyHomeController{ mealId ->
+            homeViewModel.onMealSelected(mealId)
+            navController.navigate(R.id.action_home_to_detail)
+        }
+        binding.homeRecyclerView.setControllerAndBuildModels(epoxyHomeController)
     }
 
     override fun onDestroy() {

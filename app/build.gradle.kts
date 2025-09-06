@@ -86,4 +86,8 @@ dependencies {
     implementation("com.airbnb.android:epoxy:${epoxyVersion}")
     implementation("com.google.android.material:material:1.9.0")
     ksp ("com.airbnb.android:epoxy-processor:$epoxyVersion")
+
+    implementation("androidx.navigation:navigation-fragment-ktx:2.8.0")
+    implementation("androidx.navigation:navigation-ui-ktx:2.8.0")
+    implementation("com.google.android.material:material:1.12.0")
 }
