@@ -6,6 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.iti.tastytrail.R
 import com.iti.tastytrail.data.models.Meal
@@ -20,6 +23,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -38,7 +43,7 @@ class HomeFragment : Fragment() {
     private var dm: List<Meal> = emptyList()
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
-    private lateinit var homeViewModel: HomeViewModel
+   // private lateinit var homeViewModel: HomeViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,50 +65,53 @@ class HomeFragment : Fragment() {
     }
 
     private fun loadHomeData() {
-        coroutineScope.launch {
-            try {
-                // Get current user
-                val currentUser: User? = withContext(Dispatchers.IO) {
-                    getCurrentUser()
-                }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                try {
+                    // Get current user
+                    val currentUser: User? = withContext(Dispatchers.IO) {
+                        getCurrentUser()
+                    }
 
-                // Get random meal with proper error handling
-                val randomMeal: Meal? = withContext(Dispatchers.IO) {
-                    val result = mealRepo.getRandomRecipe()
-                    when {
-                        result.isSuccess -> result.getOrNull()
-                        else -> {
-                            // Log error or handle it
-                            null
+                    // Get random meal
+                    val randomMeal: Meal? = withContext(Dispatchers.IO) {
+                        val result = mealRepo.getRandomRecipe()
+                        result.getOrNull()
+                    }
+
+                    // Load meals in parallel
+                    val meals = withContext(Dispatchers.IO) {
+                        (1..30).map {
+                            async {
+                                mealRepo.refreshRecipes()
+                                val randomMeal = mealRepo.getRandomRecipe()
+                                randomMeal.getOrNull()
+                            }
+                        }.awaitAll().filterNotNull()
+                    }
+
+                    // Only update UI if fragment is still alive
+                    if (_binding != null && isAdded) {
+                        dm = meals
+                        hideLoading()
+
+                        if (randomMeal != null) {
+                            setupEpoxyController(currentUser, randomMeal, dm)
+                        } else {
+                            showError("Failed to load meal data")
                         }
                     }
-                }
-                val meals = mutableListOf<Meal>()
-                repeat(30) {
-                    mealRepo.refreshRecipes()
-                    val randomMeal = mealRepo.getRandomRecipe()
-                    if (randomMeal.isSuccess) {
-                        randomMeal.getOrNull()?.let { meal ->
-                            meals.add(meal)
-                        }
+
+                } catch (e: Exception) {
+                    if (_binding != null && isAdded) {
+                        hideLoading()
+                        showError("An error occurred: ${e.message}")
                     }
                 }
-                dm = meals
-                // Hide loading and setup UI
-                hideLoading()
-
-                if (randomMeal != null) {
-                    setupEpoxyController(currentUser, randomMeal , dm)
-                } else {
-                    showError("Failed to load meal data")
-                }
-
-            } catch (e: Exception) {
-                hideLoading()
-                showError("An error occurred: ${e.message}")
             }
         }
     }
+
 
     private fun setupEpoxyController(user: User?, meal: Meal , dm: List<Meal>) {
         val epoxyHomeController = EpoxyHomeController(
@@ -112,8 +120,8 @@ class HomeFragment : Fragment() {
             // You might want to load more meals for discovery section
             discoverMeals = dm // TODO: Load discover meals
         ) { mealId ->
-            homeViewModel.onMealSelected(mealId)
-            findNavController().navigate(R.id.action_home_to_detail)
+          //  homeViewModel.onMealSelected(mealId)
+//            findNavController().navigate(R.id.action_home_to_detail)
         }
 
         binding.homeRecyclerView.setControllerAndBuildModels(epoxyHomeController)
