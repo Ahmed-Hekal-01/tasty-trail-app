@@ -81,7 +81,7 @@ class HomeFragment : Fragment() {
                     }
                 }
                 val meals = mutableListOf<Meal>()
-                repeat(15) {
+                repeat(30) {
                     mealRepo.refreshRecipes()
                     val randomMeal = mealRepo.getRandomRecipe()
                     if (randomMeal.isSuccess) {
@@ -124,13 +124,13 @@ class HomeFragment : Fragment() {
     private fun showLoading() {
         // Show loading indicator
         binding.homeRecyclerView.visibility = View.GONE
-        // If you have a loading view: binding.loadingView.visibility = View.VISIBLE
+        binding.loadingView.visibility = View.VISIBLE
     }
 
     private fun hideLoading() {
         // Hide loading indicator
         binding.homeRecyclerView.visibility = View.VISIBLE
-        // If you have a loading view: binding.loadingView.visibility = View.GONE
+        binding.loadingView.visibility = View.GONE
     }
 
     private fun showError(message: String) {

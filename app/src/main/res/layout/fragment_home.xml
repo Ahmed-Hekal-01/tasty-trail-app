@@ -5,8 +5,8 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient_bg"
     android:paddingStart="16dp"
-    android:paddingEnd="16dp"
     android:paddingTop="24dp"
+    android:paddingEnd="16dp"
     android:paddingBottom="0dp">
 
     <com.airbnb.epoxy.EpoxyRecyclerView
@@ -15,6 +15,19 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    <!-- Loading View -->
+    <ProgressBar
+        android:id="@+id/loadingView"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
