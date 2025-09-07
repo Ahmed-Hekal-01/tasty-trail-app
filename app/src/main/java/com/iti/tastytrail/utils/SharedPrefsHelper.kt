@@ -3,6 +3,7 @@ package com.iti.tastytrail.utils
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import com.iti.tastytrail.data.models.User
 
 class PreferenceManager(context: Context) {
 
@@ -98,5 +99,35 @@ class PreferenceManager(context: Context) {
     // Clear all preferences (complete reset)
     fun clearAll() {
         sharedPreferences.edit { clear() }
+    }
+
+    fun getCurrentUser(): User? {
+        return if (isLoggedIn && userId != null && userEmail != null) {
+            User(
+                id = userId?.toLongOrNull() ?: 0L,
+                email = userEmail!!,
+                username = userName ?: userEmail!!.substringBefore("@"),
+                password = ""
+            )
+        } else {
+            null
+        }
+    }
+
+    fun getCurrentUserId(): Long? {
+        return userId?.toLongOrNull()
+    }
+
+    fun getCurrentUserEmail(): String? {
+        return if (isLoggedIn) userEmail else null
+    }
+
+    fun getCurrentUserName(): String? {
+        return if (isLoggedIn) userName else null
+    }
+
+    // Check if user is logged in and has valid data
+    fun hasValidSession(): Boolean {
+        return isLoggedIn && userId != null && userEmail != null
     }
 }
