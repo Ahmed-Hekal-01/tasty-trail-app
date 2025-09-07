@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.iti.tastytrail.R
 import com.iti.tastytrail.databinding.FragmentLoginBinding
 import com.iti.tastytrail.repositories.UserRepository
+import com.iti.tastytrail.utils.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,13 +23,15 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class LoginFragment : Fragment() {
+class LoginFragment : BaseFragment() {
 
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
 
     @Inject
     lateinit var userRepo: UserRepository
+
+    private lateinit var preferenceManager: PreferenceManager
     private val coroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
     override fun onCreateView(
@@ -42,53 +45,128 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.loginButton.setOnClickListener {
-            val email = binding.emailEditText.text.toString().trim()
-            val password = binding.passwordEditText.text.toString().trim()
+        preferenceManager = PreferenceManager(requireContext())
 
-            if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(
-                    requireContext(),
-                    "Please fill in all fields", Toast.LENGTH_SHORT
-                ).show()
-                return@setOnClickListener
-            }
+        checkLoginState()
 
-            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                Toast.makeText(
-                    requireContext(),
-                    "Please enter a valid email address", Toast.LENGTH_SHORT
-                ).show()
-                return@setOnClickListener
-            }
+        setupClickListeners()
+    }
 
-            coroutineScope.launch {
-                val isAuthenticated = withContext(Dispatchers.IO) {
-                    userRepo.authenticateUser(email, password)
-                }
-
-                if (isAuthenticated != null) {
-                    saveLoginState()
-                    findNavController().navigate(R.id.action_login_to_home)
-                } else {
-                    Toast.makeText(requireContext(), "Invalid credentials", Toast.LENGTH_SHORT)
-                        .show()
-                }
-            }
-        }
-
-        binding.registerRedirect.setOnClickListener {
-            findNavController().navigate(R.id.action_login_to_register)
+    private fun checkLoginState() {
+        if (preferenceManager.isLoggedIn) {
+            navigateToHome()
         }
     }
 
-    private fun saveLoginState() {
+    private fun setupClickListeners() {
+        binding.loginButton.setOnClickListener {
+            performLogin()
+        }
+
+        binding.registerRedirect.setOnClickListener {
+            navController.navigate(R.id.action_login_to_register)
+        }
+    }
+
+    private fun performLogin() {
+        val email = binding.emailEditText.text.toString().trim()
+        val password = binding.passwordEditText.text.toString().trim()
+
+        if (!validateInput(email, password)) {
+            return
+        }
+
+        setLoadingState(true)
+
+        coroutineScope.launch {
+            try {
+                val authenticatedUser = withContext(Dispatchers.IO) {
+                    userRepo.authenticateUser(email, password)
+                }
+
+                setLoadingState(false)
+
+                if (authenticatedUser != null) {
+                    saveLoginState(authenticatedUser, email)
+
+                    showToast("Login successful!")
+
+                    navigateToHome()
+                } else {
+                    showToast("Invalid credentials")
+                }
+
+            } catch (e: Exception) {
+                setLoadingState(false)
+                showToast("Login failed. Please try again.")
+            }
+        }
+    }
+
+    private fun validateInput(email: String, password: String): Boolean {
+        when {
+            email.isEmpty() || password.isEmpty() -> {
+                showToast("Please fill in all fields")
+                return false
+            }
+            !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
+                showToast("Please enter a valid email address")
+                return false
+            }
+            password.length < 6 -> {
+                showToast("Password must be at least 6 characters")
+                return false
+            }
+        }
+        return true
+    }
+
+    private fun saveLoginState(user: Any?, email: String) {
+        preferenceManager.isLoggedIn = true
+
+        when (user) {
+            is com.iti.tastytrail.data.models.User -> {
+                preferenceManager.saveUserData(
+                    userId = user.id.toString(),
+                    email = user.email,
+                    name = user.username,
+                )
+            }
+            else -> {
+                preferenceManager.userEmail = email
+                preferenceManager.userName = email.substringBefore("@")
+            }
+        }
+
+        saveLoginStateBackwardCompatible()
+    }
+
+    private fun saveLoginStateBackwardCompatible() {
         val sharedPref = requireActivity()
             .getSharedPreferences("recipe_prefs", Context.MODE_PRIVATE)
 
         sharedPref.edit {
             putBoolean("isLoggedIn", true)
         }
+    }
+
+    private fun navigateToHome() {
+        try {
+            navController.navigate(
+                R.id.action_login_to_home
+            )
+        } catch (e: Exception) {
+            navController.navigate(R.id.action_login_to_home)
+        }
+    }
+
+    private fun setLoadingState(isLoading: Boolean) {
+        binding.loginButton.isEnabled = !isLoading
+        binding.loginButton.text = if (isLoading) "Logging in..." else "Login"
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {

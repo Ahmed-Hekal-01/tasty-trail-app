@@ -1,7 +1,6 @@
-package com.iti.tastytrail.fragments
+package com.iti.tastytrail.ui.fragments
 
 import com.iti.tastytrail.databinding.FragmentRecipeDetailBinding
-import com.iti.tastytrail.ui.fragments.BaseFragment
 
 class RecipeDetailFragment : BaseFragment() {
     private var _binding : FragmentRecipeDetailBinding? = null

@@ -79,7 +79,6 @@ class RegisterFragment : Fragment() {
 
                 // todo don't forget to nav the user to the home after reg
                 if (isRegistered) {
-                  //  saveLoginState()
                     findNavController().navigate(R.id.action_register_to_login)
                 } else {
                     Toast.makeText(requireContext(), "Error!", Toast.LENGTH_SHORT)
@@ -93,14 +92,6 @@ class RegisterFragment : Fragment() {
         }
     }
 
-    private fun saveLoginState() {
-        val sharedPref = requireActivity()
-            .getSharedPreferences("recipe_prefs", Context.MODE_PRIVATE)
-
-        sharedPref.edit {
-            putBoolean("isLoggedIn", true)
-        }
-    }
 
     override fun onDestroy() {
         super.onDestroy()
