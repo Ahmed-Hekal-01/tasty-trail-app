@@ -54,6 +54,14 @@ class LoginFragment : Fragment() {
                 return@setOnClickListener
             }
 
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                Toast.makeText(
+                    requireContext(),
+                    "Please enter a valid email address", Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+
             coroutineScope.launch {
                 val isAuthenticated = withContext(Dispatchers.IO) {
                     userRepo.authenticateUser(email, password)

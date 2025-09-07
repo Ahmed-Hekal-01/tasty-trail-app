@@ -56,7 +56,13 @@ class RegisterFragment : Fragment() {
                 Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                Toast.makeText(
+                    requireContext(),
+                    "Please enter a valid email address", Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
             if (password != confirmPassword) {
                 Toast.makeText(requireContext(), "Passwords do not match", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -73,8 +79,8 @@ class RegisterFragment : Fragment() {
 
                 // todo don't forget to nav the user to the home after reg
                 if (isRegistered) {
-//                    saveLoginState()
-                    findNavController().navigate(R.id.action_register_to_home)
+                  //  saveLoginState()
+                    findNavController().navigate(R.id.action_register_to_login)
                 } else {
                     Toast.makeText(requireContext(), "Error!", Toast.LENGTH_SHORT)
                         .show()
