@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Tasty Trail</string>
     <string name="app_logo"><![CDATA[<string name=\"app_logo\">Recipe App Logo</string>\n]]></string>
+    <string name="time_icon">Cook time</string>
+    <string name="area_icon">Area</string>
+    <string name="category_icon">Category</string>
+    <string name="recipe_image">Recipe image</string>
+    <string name="ingredient_check">Ingredient check</string>
 </resources>

@@ -1,0 +1,11 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- This path draws the icon. It consists of a rectangle and two lines,
+         representing a list or a category. -->
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M3,4H21V6H3V4ZM3,10H21V12H3V10ZM3,16H21V18H3V16Z"/>
+</vector>
