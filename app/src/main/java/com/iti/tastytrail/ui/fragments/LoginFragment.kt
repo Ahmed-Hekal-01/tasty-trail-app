@@ -109,10 +109,6 @@ class LoginFragment : BaseFragment() {
                 showToast("Please fill in all fields")
                 return false
             }
-            !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
-                showToast("Please enter a valid email address")
-                return false
-            }
             password.length < 6 -> {
                 showToast("Password must be at least 6 characters")
                 return false

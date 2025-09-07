@@ -18,10 +18,10 @@ interface UserDao {
     
     @Query("SELECT * FROM users WHERE username = :username")
     suspend fun getUserByUsername(username: String): User?
-    
-    @Query("SELECT * FROM users WHERE email = :email AND password = :password")
-    suspend fun authenticateUser(email: String, password: String): User?
-    
+
+    @Query("SELECT * FROM users WHERE (email = :identifier OR username = :identifier) AND password = :password LIMIT 1")
+    suspend fun authenticateUser(identifier: String, password: String): User?
+
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertUser(user: User)
     

@@ -1,6 +1,8 @@
 package com.iti.tastytrail.ui.epoxy
 
 import android.annotation.SuppressLint
+import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
+import androidx.navigation.fragment.findNavController
 import com.airbnb.epoxy.CarouselModel_
 import com.airbnb.epoxy.EpoxyController
 import com.iti.tastytrail.R
